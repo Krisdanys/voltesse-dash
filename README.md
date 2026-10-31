@@ -1,3 +1,5 @@
+> **Figma technician branch:** See [figma-gui/README.md](figma-gui/README.md) for the authenticated laptop GUI, local setup, and [Figma handoff](figma-gui/FIGMA_HANDOFF.md). The original driver application below is unchanged.
+
 # Voltesse Dash ⚡ v2.0.2
 
 [![Version](https://img.shields.io/badge/version-2.0.2-00F5A0.svg)](https://github.com/r2d2pr/voltesse-dash)

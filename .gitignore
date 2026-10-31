@@ -36,3 +36,14 @@ db/backups/
 
 # graphify knowledge graph output (machine-specific)
 graphify-out/
+
+# Technician web app: credentials, generated files, private backups
+.env
+.env.*
+!.env.example
+node_modules/
+dist/
+backups/
+.pytest_cache/
+playwright-report/
+test-results/

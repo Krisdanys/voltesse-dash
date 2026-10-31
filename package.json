@@ -1,0 +1,9 @@
+{
+  "name": "voltesse-dash-figma-branch",
+  "private": true,
+  "scripts": {
+    "setup:web": "npm ci --prefix figma-gui/web",
+    "dev": "npm run dev --prefix figma-gui/web -- --host 0.0.0.0",
+    "build": "npm run build --prefix figma-gui/web"
+  }
+}
