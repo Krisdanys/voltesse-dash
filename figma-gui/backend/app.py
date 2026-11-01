@@ -202,8 +202,9 @@ def create_app(settings: Settings | None = None):
                     'history': [{'seconds': x, 'temperature': y} for x, y in zip(times, temps)],
                     'timestamp': None}
         with connect(settings) as conn:
-            latest = conn.execute('''SELECT * FROM telemetry_log WHERE signal_status IS DISTINCT FROM 'FIGMA DEMO'
-                ORDER BY "timestamp" DESC, log_id DESC LIMIT 1''').fetchone()
+            latest = conn.execute('''SELECT t.*, s.source_type FROM telemetry_log t JOIN vehicle_session s USING (session_id)
+                WHERE t.signal_status IS DISTINCT FROM 'FIGMA DEMO'
+                ORDER BY t."timestamp" DESC, t.log_id DESC LIMIT 1''').fetchone()
             if not latest:
                 return {'mode': 'DATABASE', 'status': 'No vehicle readings available', 'metrics': None, 'history': [], 'stale': True}
             rows = conn.execute('''SELECT extract(epoch FROM ("timestamp" - %s::timestamptz)) AS seconds,
@@ -212,7 +213,7 @@ def create_app(settings: Settings | None = None):
                 ORDER BY "timestamp"''', (latest['timestamp'], latest['session_id'], latest['timestamp'], latest['timestamp'])).fetchall()
         stale = (datetime.now(timezone.utc) - latest['timestamp']).total_seconds() > 5
         return {'mode': 'DATABASE', 'status': latest['signal_status'] or 'Database telemetry', 'stale': stale,
-                'timestamp': latest['timestamp'], 'history': rows,
+                'timestamp': latest['timestamp'], 'source_type': latest['source_type'], 'history': rows,
                 'metrics': {'speed': latest['speed_mph'], 'rpm': latest['motor_rpm'], 'battery': latest['battery_percent'],
                             'temperature': latest['motor_temperature'], 'power': latest['power_draw_watts']}}
 

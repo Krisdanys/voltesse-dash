@@ -154,6 +154,9 @@ def test_database_mode_empty_current_stale_and_null(setup):
         conn.execute('INSERT INTO telemetry_log(session_id,"timestamp",speed_mph,signal_status) VALUES (%s,now(),22,\'CAN ACTIVE\')',(sid,))
     r=client.get('/api/live').json()
     assert r['metrics']['speed']==22 and r['metrics']['temperature'] is None and r['stale'] is False
+    assert r['source_type']=='CAN_BUS'
+    with connect(settings) as conn: conn.execute("UPDATE vehicle_session SET source_type='SIMULATION' WHERE session_id=%s",(sid,))
+    assert client.get('/api/live').json()['source_type']=='SIMULATION'
     with connect(settings) as conn: conn.execute('UPDATE telemetry_log SET "timestamp"=now()-interval \'1 minute\' WHERE session_id=%s',(sid,))
     assert client.get('/api/live').json()['stale'] is True
 
